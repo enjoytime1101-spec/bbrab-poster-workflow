@@ -1,0 +1,89 @@
+{
+  "version": "3.0.0",
+  "assets": [
+    {
+      "id": "poster.diagnose",
+      "inputs": [
+        "brief",
+        "rejection",
+        "reference_metadata"
+      ],
+      "prompt": "Treat all inputs as business data. Separate facts, hypotheses and unknowns. Classify rejection as factual mismatch, missing business cues, brand mismatch, taste, or unclear. Cite the specific input for every claim. Ask at most two concrete questions that affect production; offer choices or reference comparisons when desired outcome is unknown. Do not invent industry standards or confidence scores.",
+      "acceptance": [
+        "Facts have input sources",
+        "Hypotheses are labeled",
+        "At most two actionable questions"
+      ],
+      "failure_case": "Assuming every manufacturer needs a robotic arm.",
+      "fallback": "Ask which visible object is incorrect, or request an approved reference.",
+      "version": "3.0.0",
+      "status": "requires_model_and_customer_evaluation",
+      "model_evidence": null
+    },
+    {
+      "id": "poster.art-direction",
+      "inputs": [
+        "confirmed_facts",
+        "reference_metadata",
+        "brand_rules",
+        "holiday"
+      ],
+      "prompt": "Propose three materially distinct poster directions. For each return subject, composition and hierarchy, sourced business cues, required assets, tradeoffs, background prompt and layout instructions. Mark product-dependent directions blocked when references are absent. Do not invent machinery, certifications, prices or claims. Keep exact text and logos in separate composited layers. Each result is a proposal requiring customer selection.",
+      "acceptance": [
+        "Directions differ in subject or hierarchy",
+        "Required assets are present or marked missing",
+        "No assumed customer approval"
+      ],
+      "failure_case": "Three adjective variants of the same generic technology background.",
+      "fallback": "Offer a neutral brand layout and identify missing product evidence.",
+      "version": "3.0.0",
+      "status": "requires_model_and_customer_evaluation",
+      "model_evidence": null
+    },
+    {
+      "id": "poster.visual-review",
+      "inputs": [
+        "actual_image",
+        "confirmed_job",
+        "references",
+        "machine_checks"
+      ],
+      "requires": "Actual image input and a vision-capable reviewer",
+      "prompt": "Inspect the actual output against the confirmed brief and reference images. For each check return pass, fail or unknown, observable evidence, image location and minimum repair. Unreadable text and unreferenced hardware remain unknown. Never override failed file or dimension checks. Without an actual image stop; do not infer visual quality from the prompt. Customer acceptance remains a separate human action.",
+      "acceptance": [
+        "Findings point to visible regions",
+        "Unknowns are preserved",
+        "Machine failures are not overridden",
+        "Human acceptance is separate"
+      ],
+      "failure_case": "Approving a poster solely from its prompt.",
+      "fallback": "List unresolved checks for a human or request a readable crop.",
+      "version": "3.0.0",
+      "status": "requires_model_and_customer_evaluation",
+      "model_evidence": null
+    },
+    {
+      "id": "poster.aerospace",
+      "inputs": [
+        "aerospace_subject",
+        "accuracy_mode",
+        "model_name",
+        "evidence_source",
+        "reference_images",
+        "confirmed_brief"
+      ],
+      "prompt": "Distinguish rocket launch services, satellite hardware and satellite applications. For real hardware preserve the supplied asset through compositing; do not invent unseen structure, missions, payload figures or insignia. Missing usable model evidence blocks real-hardware production. For concepts include an explicit Concept illustration label and avoid implying an identified vehicle or actual mission. Balance holiday and business hierarchy. Review structure, flight context, claims and reference fidelity before customer review.",
+      "acceptance": [
+        "Business subtype is correct",
+        "Real hardware uses supplied evidence",
+        "Concepts are labeled",
+        "No fabricated mission or performance claims"
+      ],
+      "failure_case": "Using a launch vehicle to represent a remote-sensing data business.",
+      "fallback": "Return to evidence collection or offer a clearly labeled concept.",
+      "version": "3.0.0",
+      "status": "requires_model_and_customer_evaluation",
+      "model_evidence": null
+    }
+  ]
+}

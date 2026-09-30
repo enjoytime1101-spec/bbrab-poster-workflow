@@ -1,0 +1,80 @@
+{
+  "name": "bbrab-poster-workflow",
+  "version": "3.0.0",
+  "native_import": false,
+  "format": "portable-specification",
+  "execution": "host_required",
+  "entry": "intake",
+  "nodes": [
+    {
+      "id": "intake",
+      "type": "clarification",
+      "next": "direction_review"
+    },
+    {
+      "id": "direction_review",
+      "type": "human_choice",
+      "choices": [
+        "festival",
+        "business",
+        "professional"
+      ],
+      "on_reject": "intake",
+      "next": "compile"
+    },
+    {
+      "id": "compile",
+      "type": "local_tool",
+      "command": "python3 skill/bbrab-poster-workflow/scripts/poster_workflow.py brief.json --asset-root ./assets --output job.json",
+      "on_blocked": "intake",
+      "next": "confirmation"
+    },
+    {
+      "id": "confirmation",
+      "type": "human_confirmation",
+      "bind": "plan_id",
+      "next": "production"
+    },
+    {
+      "id": "production",
+      "type": "external_image_and_layout",
+      "connected": false,
+      "next": "review"
+    },
+    {
+      "id": "review",
+      "type": "human_review",
+      "bind": [
+        "plan_id",
+        "artifact_sha256",
+        "reviewer"
+      ],
+      "on_pass": "accepted",
+      "on_first_failure": "repair",
+      "on_failure_limit": "designer"
+    },
+    {
+      "id": "repair",
+      "type": "targeted_repair",
+      "next": "review"
+    },
+    {
+      "id": "designer",
+      "type": "stop_and_handoff"
+    },
+    {
+      "id": "accepted",
+      "type": "terminal",
+      "publish_automatically": false
+    }
+  ],
+  "max_failed_reviews": 2,
+  "invariants": [
+    "authenticated_owner_scope",
+    "input_changes_invalidate_confirmation",
+    "review_requires_actual_image",
+    "unknown_is_not_pass",
+    "failed_file_checks_block_acceptance",
+    "no_paid_call_without_host_authorization"
+  ]
+}
