@@ -1,3 +1,7 @@
+# v3.1.0 — 2026-10-08
+
+Added a finite aerospace selection renderer, five holiday presets, three layouts, and a platform API delivery skill. Real Remotion PNG/MP4 output; no model generation. Original v3 compiler retained. Public package does not include hosted account/queue infrastructure.
+
 # Changelog
 
 ## 3.0.0 — 2026-09-30

@@ -1,5 +1,9 @@
 # BBRab Poster Workflow
 
+**v3.1.0 adds an executable selection-to-PNG/MP4 workflow:** [run the Remotion renderer](SELECTION-WORKFLOW.md) · [platform delivery skill](skill/bbrab-aerospace-delivery/SKILL.md). Three bounded aerospace holiday layouts; no model tokens.
+
+The following section describes the original v3.0 handoff compiler, which is retained unchanged.
+
 [Playground](https://enjoytime1101-spec.github.io/bbrab-poster-workflow/) · [Releases](https://github.com/enjoytime1101-spec/bbrab-poster-workflow/releases) · [Skill](skill/bbrab-poster-workflow/SKILL.md) · [Prompt blocks](prompt-blocks/README.md)
 
 A reference-first workflow for enterprise holiday posters when customers report “wrong industry” but cannot describe the desired result. Separate business facts from creative proposals, compile a reviewable production handoff, and keep acceptance tied to actual images and human judgment.

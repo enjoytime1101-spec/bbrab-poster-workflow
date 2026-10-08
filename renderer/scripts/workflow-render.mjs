@@ -1,0 +1,20 @@
+import {readFile,rename} from 'node:fs/promises';
+import {resolve,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {bundle} from '@remotion/bundler';
+import {selectComposition,renderMedia,renderStill} from '@remotion/renderer';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'..'),dir=resolve(process.argv[2]||'');
+if(!process.argv[2])throw Error('Expected private job directory');
+const props=JSON.parse(await readFile(resolve(dir,'input.json'),'utf8'));
+if(Object.keys(props).sort().join(',')!=='svg,variant'||!['orbit','editorial','celebration'].includes(props.variant)||typeof props.svg!=='string'||props.svg.length>3000000)throw Error('Invalid design payload');
+// Defense in depth. This process accepts only server-generated bounded SVG, never user code or network URLs.
+if(!props.svg.startsWith('<svg ')||/<\s*(script|foreignObject|iframe|use|style|animate|set|a)\b|\bon\w+\s*=|(?:https?:|file:|javascript:|url\s*\()/i.test(props.svg.replace('http://www.w3.org/2000/svg','')))throw Error('Unsafe SVG');
+for(const match of props.svg.matchAll(/(?:href|src)="([^"]*)"/g))if(!/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(match[1]))throw Error('Invalid image reference');
+const serveUrl=process.env.REMOTION_BUNDLE||await bundle({entryPoint:resolve(root,'src/index.ts'),publicDir:resolve(root,'public')});
+const browserExecutable=process.env.REMOTION_BROWSER_EXECUTABLE||null;
+const composition=await selectComposition({serveUrl,browserExecutable,id:'AerospaceWorkflow',inputProps:props});
+await renderStill({serveUrl,browserExecutable,composition,inputProps:props,frame:30,output:resolve(dir,'poster.partial.png'),imageFormat:'png',timeoutInMilliseconds:60000});
+await renderMedia({serveUrl,browserExecutable,composition,inputProps:props,outputLocation:resolve(dir,'motion.partial.mp4'),codec:'h264',concurrency:1,timeoutInMilliseconds:60000});
+await rename(resolve(dir,'poster.partial.png'),resolve(dir,'poster.png'));
+await rename(resolve(dir,'motion.partial.mp4'),resolve(dir,'motion.mp4'));
+console.log(JSON.stringify({ok:true,engine:'remotion',modelCalls:0}));
