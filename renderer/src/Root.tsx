@@ -3,6 +3,7 @@ import {
   AbsoluteFill,
   delayRender,
   continueRender,
+  cancelRender,
   Composition,
   interpolate,
   useCurrentFrame,
@@ -155,15 +156,27 @@ export const MissionCard: React.FC<CardProps> = ({
   );
 };
 
-type WorkflowProps = {svg: string; variant: string};
+type WorkflowProps = {svg: string; variant: string; quality?: string};
 // SVG is authored by aerospace_design.py, with escaped customer text and normalized PNG only.
-export const WorkflowCard: React.FC<WorkflowProps> = ({svg}) => {
+export const WorkflowCard: React.FC<WorkflowProps> = ({svg,quality}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const [fontHandle] = useState(() => delayRender("Load Chinese typography"));
-  useEffect(() => { document.fonts.ready.then(() => continueRender(fontHandle)); }, [fontHandle]);
+  useEffect(() => { document.fonts.ready.then(() => {
+    if (quality === 'brand-v2') {
+      const canvas = document.querySelector('[data-brand-canvas] svg');
+      if (!canvas) return cancelRender(new Error('Missing design SVG'));
+      for (const node of Array.from(canvas.querySelectorAll('text'))) {
+        const box = (node as SVGGraphicsElement).getBBox();
+        if (box.x < -1 || box.y < -1 || box.x + box.width > 1281 || box.y + box.height > 721) {
+          return cancelRender(new Error('Text outside delivery canvas'));
+        }
+      }
+    }
+    continueRender(fontHandle);
+  }).catch(cancelRender); }, [fontHandle,quality,svg]);
   return <AbsoluteFill style={{background:'#081b2c',overflow:'hidden'}}>
-    <div style={{width:1280,height:720,opacity:interpolate(frame,[0,.65*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})}}
+    <div data-brand-canvas style={{width:1280,height:720,opacity:interpolate(frame,[0,.65*fps],[0,1],{extrapolateLeft:'clamp',extrapolateRight:'clamp'})}}
       dangerouslySetInnerHTML={{__html:svg}} />
     <div style={{position:'absolute',left:72,top:614,width:36,height:2,background:'#ffffff55',translate:`${interpolate(frame,[0,6*fps],[0,1100])}px 0`}} />
   </AbsoluteFill>;

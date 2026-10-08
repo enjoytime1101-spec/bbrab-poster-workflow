@@ -84,3 +84,9 @@ Prompt cards require model and customer evaluation. Human reviewers must verify 
 ## License
 
 Apache-2.0 for this repository's original code and text; see LICENSE and NOTICE. No third-party image, font, customer asset or private platform code is bundled. See THIRD_PARTY_NOTICES.md. Brand names and external source links do not imply endorsement.
+
+## 企业品牌档案工作流（V7.19 接口）
+
+[品牌 API skill](skill/bbrab-aerospace-delivery/SKILL.md) 支持复用私有企业资料与产品／Logo 素材、生成三种完整排版、筛选后导出 1080p PNG 和 6 秒 MP4。首期为卫星／火箭＋中秋；需要已有产品图，不调用生图模型。文件检查通过与客户确认采用分开记录。
+
+此仓库提供公开操作契约及渲染器，不包含平台私有账号、数据库或生产后端。`quality: "brand-v2"` 启用 1.5 倍输出及文字画布边界检查；旧版输入保持 720p。部署状态以平台能力接口为准。
